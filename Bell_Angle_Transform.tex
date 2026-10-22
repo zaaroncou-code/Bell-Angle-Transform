@@ -1,0 +1,1290 @@
+\documentclass[11pt]{article}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[margin=1.1in]{geometry}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}[definition]{Example}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{observation}[definition]{Numerical Observation}
+\newtheorem{openproblem}[definition]{Open Problem}
+
+\title{The Bell Angle Transform: A Normalized Framework for\\ Bell-Like Functions and Tail Behavior}
+\author{
+Zachary A. Coughlin\\
+\texttt{\href{mailto:zaaroncou@gmail.com}{zaaroncou@gmail.com}}\\
+\texttt{GitHub: \href{https://github.com/zaaroncou-code?tab=repositories}{https://github.com/zaaroncou-code?tab=repositories}}\\
+\texttt{LinkedIn: \href{https://www.linkedin.com/in/zachary-c-438814283/?lipi=urn}{https://www.linkedin.com/in/zachary-c-438814283/?lipi=urn}}
+}
+
+\date{October 11th, 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+For a symmetric bell-shaped function, normalizing by peak height and half-width at
+half-maximum (HWHM) removes the two-parameter ambiguity of location, height, and
+width, producing a function $B$ with $B(0)=1$ and $B(1)=\tfrac12$. Applying the
+classical alternating (Zak-transform-at-half-frequency) periodization to $B$ and
+evaluating at the origin defines a scalar $\varpi=Y\{B\}(0)$, which reduces to the
+selected-interval identity $\varpi=2\sum_{k\ge1}[B(2k)-B(2k+1)]$. Under the baseline
+hypotheses used here (symmetry, strict decrease, and decay to zero), neither finite
+area nor differentiability is required for $\varpi$ to be defined, and $0<\varpi<1$
+for every such bell, with every value in this interval attained. Because $\varpi$
+depends on $B$ only through its integer values, it is not injective on the full class
+of normalized bells and is developed here as a scalar shape statistic useful for
+one-sided screening rather than as a distribution identifier; it is likewise not a
+universal measure of asymptotic tail order, a distinction made precise by an explicit
+example. On matched-half-width mixtures, however, $\varpi$ is exactly affine, giving
+closed-form recovery of the mixing parameter for a peak-normalized pseudo-Voigt-type
+line-shape family, an application illustrated numerically and, in a small simulation,
+recovered from data. A companion representation, the Bell Vector, is also introduced:
+applying the classical Faber--Schauder dyadic reconstruction to $B$ after a
+compactifying change of variable yields a countable coefficient vector from which $B$
+is exactly and uniquely recovered, complementing the scalar $\varpi$ with a complete
+description of shape.
+\end{abstract}
+
+ 
+\section{Introduction}
+ 
+
+Let a bell-like curve be defined as a continuous, symmetric function $f:\mathbb R\to\mathbb R$
+(i.e.\ $f(-x)=f(x)$) with $f(x)\to0$ as $x\to \pm \infty$, strictly increasing on
+$(-\infty,0]$ and strictly decreasing on $[0,\infty)$, with its maximum at $x=0$. No
+differentiability or finite-area condition is imposed in general; these are invoked
+later only where specific results need them (a differentiable subclass for the
+derivative identity in Section~3.5, and an integrable, sufficiently regular subclass
+for the Fourier representation in Section~3.3), while the Range Theorem and the Bell
+Critical Constant of Section~5 require only the strict monotonicity and continuity
+stated here, used in particular for the HWHM's uniqueness and throughout the range
+theorem's proof. Across statistics and other disciplines of math and science, when
+analyzing distributions and their respective curves, a special shape that can show up
+is the bell-like curve. For instance, the classical bell curve arises from the normal
+distribution. It is centered at its mean $\mu$, where the mean, median, and mode
+coincide, and its values decrease away from this center according to the squared
+distance $\left(x-\mu\right)^2$. Its shape is therefore determined by a central
+location and a scale parameter controlling its spread which produces the familiar
+smooth and symmetric bell-like curve. Other bell-like curves like t-distribution,
+Cauchy and more also show up in other distributions, having special different
+features like the size of their tails and more.
+
+With all these special and unique features for bell-like curves, in this paper, I introduce a transform called the Bell Angle Transform
+(Definition~\ref{def:bell-angle-transform}) and a scalar quantity $\varpi$ obtained by
+evaluating the transform at the origin. Rather than relying on moments, $\varpi$ is built
+from differences in the normalized profile across selected intervals. As a result, it
+remains defined for bell-like functions (the functions of bell-like curves) whose variance, kurtosis, or even total area
+may fail to exist. After normalization by peak height and half-width at half-maximum,
+every strictly decreasing bell considered here receives a Bell Angle in the interval
+\[
+0<\varpi<1,
+\]
+and every value in this interval is attainable. The quantity therefore provides a common
+scale on which bell shapes with very different tail behavior can be compared.
+
+A single number, however, cannot contain the full shape of an arbitrary bell. Indeed,
+distinct bell-like functions may have exactly the same value of $\varpi$. To separate
+the problem of ranking a bell from that of representing it, I also introduce
+the Bell Vector $\vec{w}(B)$. Whereas $\varpi$ compresses a bell into a scalar statistic,
+the Bell Vector gives a countable collection of coefficients from which the entire
+normalized bell can be reconstructed. For the continuous, symmetric, decaying class
+considered in its construction, a fixed universal reconstruction vector
+$\vec{\pi}(x)$ satisfies
+\[
+B(\vec{w},x)=\vec{\pi}(x)\cdot\vec{w}(B)=B(x),
+\]
+and the Bell Vector is unique relative to this fixed basis. Thus $\varpi$ and
+$\vec{w}$ serve different purposes: the former provides a \(1\)-dimensional measure of
+selected tail descent, while the latter retains the information necessary to recover the
+full normalized profile.
+
+The main focus of this paper remains the scalar Bell Angle and its behavior. I derive
+its selected-interval representation, establish its range, calculate reference values
+for several common bell families, examine what information it can and cannot determine,
+and study its behavior for heavy-tailed functions and matched-width mixtures. The Bell
+Vector is developed as an extended and complementary representation rather than as a replacement for
+$\varpi$. Together, the normalization, Bell Angle Transform, Bell Angle scalar, and Bell
+Vector provide a framework for answering two related questions: how bell-like functions/curves
+can be ranked on a common scale, and how their shapes and tail behavior can be represented
+and compared without relying solely on classical moment-based quantities.
+ 
+\section{Preliminary Definitions}
+ 
+
+Before introducing the Bell Angle Transform, several common bell-shaped functions and
+mathematical concepts will be referenced throughout this paper.
+
+\subsection{Gaussian Distribution}
+The Gaussian, or normal, distribution is given by
+\[
+f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}},
+\]
+where $\mu$ is the mean and $\sigma$ is the standard deviation. Its tails decay rapidly
+as $|x|$ increases.
+
+\subsection{Cauchy Distribution}
+The standard Cauchy distribution is
+\[
+f(x)=\frac{1}{\pi(1+x^2)} .
+\]
+It has much heavier tails than the Gaussian distribution.
+
+\subsection{Student's $t$-Distribution}
+The Student's $t$-distribution is a symmetric bell-shaped distribution controlled by its
+degrees of freedom $\nu$:
+\[
+f_\nu(x)=\frac{\Gamma\!\left(\frac{\nu+1}{2}\right)}
+{\sqrt{\nu\pi}\,\Gamma\!\left(\frac{\nu}{2}\right)}
+\left(1+\frac{x^2}{\nu}\right)^{-\frac{\nu+1}{2}} .
+\]
+Smaller values of $\nu$ generally correspond to heavier tails.
+
+\subsection{Logistic Function}
+The logistic function is $L(x)=\left(1+e^{-x}\right)^{-1}$, and its derivative
+\[
+L'(x)=\frac{e^{-x}}{(1+e^{-x})^2}
+\]
+forms a symmetric bell-shaped curve.
+
+\subsection{Super-Gaussian Functions}
+A useful family of bell-shaped functions is
+\[
+f_m(x)=e^{-x^{2m}},\qquad m\geq1 .
+\]
+As $m$ increases, the center becomes flatter and the sides become steeper.
+
+\subsection{Kurtosis}
+Kurtosis is a statistical quantity based on the fourth standardized moment:
+\[
+\operatorname{Kurt}(X)=\frac{\mathbb{E}\left[(X-\mu)^4\right]}{\sigma^4}.
+\]
+It is commonly used to describe a distribution's tendency to produce extreme
+observations. It is defined only when the fourth moment is finite.
+
+\subsection{Half-Width at Half-Maximum}
+For a centered bell-shaped function $f$, the half-width at half-maximum (HWHM) is the
+positive value $X$ satisfying $f(X)=f(0)/2$; the full width at half-maximum is
+$\operatorname{FWHM}=2X$.
+
+\subsection{Fourier Transform}
+Using the convention adopted in this paper,
+\[
+\widehat{f}(\xi)=\int_{-\infty}^{\infty}f(x)e^{-2\pi i\xi x}\,dx .
+\]
+
+\subsection{Periodization}
+The periodization of a function is $P_f(x)=\sum_{n\in\mathbb Z}f(x+n)$, and an
+\emph{alternating} periodization has the form
+\[
+P_f^{(-)}(x)=\sum_{n\in\mathbb Z}(-1)^n f(x+n).
+\]
+
+\subsection{Zak Transform}
+One form of the Zak transform is
+\[
+Zf(x,\omega)=\sum_{n\in\mathbb Z}f(x+n)e^{-2\pi i n\omega}.
+\]
+At $\omega=\frac12$ the factor becomes $(-1)^n$, producing an alternating periodization.
+
+\subsection{Lagrange Inversion}
+Lagrange inversion is a classical method for obtaining a power-series representation of
+the inverse of an analytic function. It is referenced below in connection with the
+horizontal normalization of bell-shaped functions.
+
+ 
+\section{The Bell Angle Framework}
+ 
+
+This section introduces the main definitions. Some of the machinery behind the
+construction (alternating periodization, Fourier representations, Lagrange inversion,
+the HWHM width convention) is already established mathematics. What is proposed here
+is the way these are combined for \emph{normalized} bell-shaped functions, and the
+quantities that result.
+
+\subsection{Universal Bell Normalization}
+
+Let $f$ be a bell-shaped function with maximum at $x=a$. Before applying the transform,
+the function is translated and rescaled into a universal form so that differences in
+position, height, and width do not affect the comparison between two bells.
+
+Let $X>0$ be the half-width at half-maximum, so that $f(a+X)=f(a)/2$: continuity,
+strict decrease on $[a,\infty)$, and decay to $0$ guarantee, by the intermediate value
+theorem, that such an $X$ exists and is unique; by symmetry
+$f(a-X)=f(a)/2$ as well. Define the normalized bell by
+\[
+\boxed{\;B(x)=\frac{f(a+Xx)}{f(a)}\;}
+\]
+This gives
+\[
+\boxed{\;B(0)=1,\qquad B(-1)=B(1)=\tfrac12 \;}
+\]
+so every bell entering the transform is placed on the same height and width scale. When
+the bell is already centered at $a=0$ this reduces to $B(x)=f(Xx)/f(0)$.
+
+The value $X$ may be obtained numerically from $f(X)=f(0)/2$ (monotonicity guarantees
+a unique root, so bisection or Newton iteration is reliable), or, under appropriate
+analytic conditions, through Lagrange series inversion applied to
+$g(u)=1-f(\sqrt u)/f(0)$, for which the half-height condition reads $g(X^2)=\tfrac12$.
+The series route requires $f''(0)\neq0$ and convergence of the inverse series at
+$z=\tfrac12$; neither condition is automatic, and flat-top bells such as $e^{-x^4}$ fail
+the first.
+
+\begin{remark}[Scale invariance]
+$B$ is unchanged if $f$ is replaced by $\alpha f(\beta x)$ for any $\alpha,\beta>0$: the
+peak is multiplied by $\alpha$ and the half-width divided by $\beta$, and both cancel.
+Removing this two-parameter ambiguity is the entire purpose of the normalization.
+\end{remark}
+
+\subsection{The Bell Angle Transform}
+
+\begin{definition}[Bell Angle Transform]\label{def:bell-angle-transform}
+Let $f$ be a bell-shaped function and $B$ its normalized form. The \emph{Bell Angle
+Transform} is
+\[
+\boxed{\;Y\{B\}(x)=\sum_{n\in\mathbb{Z}}(-1)^n B(x+n)\;}
+\]
+Equivalently, in terms of the original centered function,
+\[
+\boxed{\;Y\{f\}(x)=\frac{1}{f(0)}\sum_{n\in\mathbb{Z}}(-1)^n f\!\left(X(x+n)\right)\;}
+\]
+\end{definition}
+
+Throughout, the bilateral sum defining $Y\{B\}(x)$ is understood in the paired sense
+\[
+Y\{B\}(x) = B(x) + \sum_{n=1}^{\infty}(-1)^n\bigl(B(x+n)+B(x-n)\bigr),
+\]
+i.e.\ as the limit of symmetric partial sums; this is the convention used in every
+convergence and linearity argument below, including the mixture argument inside the
+proof of Theorem~\ref{thm:range} and Proposition~\ref{prop:affine}.
+
+The transform takes integer-shifted copies of the normalized bell and alternates their
+signs:
+\[
+\cdots+B(x-2)-B(x-1)+B(x)-B(x+1)+B(x+2)-\cdots.
+\]
+
+Two points of care. First, the argument in the second form is $X(x+n)$ and not $Xx+n$:
+the bell is normalized \emph{first}, and the integer shifts are then applied to the
+normalized copies. Second, the series converges for every bell-shaped $f$ by the Leibniz
+criterion, since the terms are eventually monotone in $|n|$ and tend to zero. No
+integrability assumption is needed, a point that matters in
+Section~\ref{sec:zc}.
+
+The alternating sum is the classical Zak transform evaluated at half-frequency. The Bell
+Angle Transform therefore does not introduce alternating periodization as new machinery;
+it combines that machinery with the normalization above and the quantities below.
+
+\subsection{Bell Angle Fourier Representation}
+
+The alternating structure gives
+\[
+Y(x+1)=-Y(x),\qquad\text{hence}\qquad Y(x+2)=Y(x).
+\]
+Suppose, for this subsection only, that $B\in\mathcal S(\mathbb R)$, the Schwartz class
+of rapidly decreasing smooth functions; this is a strictly stronger hypothesis than is
+needed for $\varpi$ itself, which by Remark~\ref{rem:weak} requires only symmetry,
+strict decrease, and decay to zero. Since the Fourier transform is an automorphism of
+$\mathcal S(\mathbb R)$, $\widehat B\in\mathcal S(\mathbb R)$ as well, so both $B$ and
+$\widehat B$ decay faster than any polynomial; the classical Poisson summation formula,
+applied to the modulated function $e^{\pi it}B(t)$, therefore converges absolutely and
+uniformly for every $x$ \cite{Grochenig2001}, and yields
+\[
+\boxed{\;Y\{B\}(x)=2\sum_{k=0}^{\infty}\widehat{B}\!\left(k+\tfrac12\right)
+\cos\!\left((2k+1)\pi x\right)\;}
+\]
+and writing $B_k=2\widehat{B}\!\left(k+\tfrac12\right)$,
+\[
+\boxed{\;Y\{B\}(x)=\sum_{k=0}^{\infty}B_k\cos\!\left((2k+1)\pi x\right)\;}
+\]
+Only odd cosine frequencies appear: $\cos(\pi x),\cos(3\pi x),\cos(5\pi x),\dots$, which
+is exactly what the antiperiodicity above requires, since even harmonics are $1$-periodic
+and cannot occur in a $1$-antiperiodic function. I refer to this as the \emph{Bell Angle
+Fourier Representation}. The underlying periodization identity is established
+mathematics; it matters here because it leads directly to the scalar defined next.
+
+\subsection{The Bell Angle Scalar}
+
+\begin{definition}[Bell Angle Scalar]\label{def:varpi}
+The \emph{Bell Angle} of a normalized bell $B$ is the value of its transform at the
+origin,
+\[
+\boxed{\;\varpi=Y\{B\}(0)\;}
+\]
+For convenience the symbol $w$ may also be used as shorthand for $\varpi$.
+\end{definition}
+
+The word ``angle'' is part of the name of the framework; $\varpi$ is not a geometric
+angle measured in degrees or radians.
+
+From the transform,
+\[
+\varpi=\sum_{n\in\mathbb{Z}}(-1)^n B(n)
+=B(0)+2\sum_{n=1}^{\infty}(-1)^n B(n),
+\]
+using symmetry. The universal normalization $B(0)=1$, $B(1)=\tfrac12$ makes the first two
+contributions cancel exactly,
+\[
+B(0)-2B(1)=1-2\left(\tfrac12\right)=0,
+\]
+and therefore
+\begin{equation}\label{eq:drops}
+\boxed{\;\varpi=2\sum_{k=1}^{\infty}\left[B(2k)-B(2k+1)\right]\;}
+\end{equation}
+
+This cancellation is the reason the half-maximum convention is used. Had normalization
+fixed $B(1)=c$ instead, the leading contribution would be $1-2c$, and $c=\tfrac12$ is the
+unique value that removes it. The normalization does not merely fix a scale: it deletes
+the central contribution by construction, leaving the behavior of the bell farther out.
+
+\subsection{Bell Intervals and Tail-Drop Strength}
+
+Identity~\eqref{eq:drops} separates the positive side of the bell into alternating unit
+intervals. Define the collection of \emph{Bell intervals}
+\[
+\boxed{\;\mathcal{I}=\{[2,3],[4,5],[6,7],\ldots\}\;}
+\]
+For a differentiable normalized bell,
+$B(2k)-B(2k+1)=\int_{2k}^{2k+1}-B'(x)\,dx$, so
+\[
+\boxed{\;\varpi=2\sum_{k=1}^{\infty}\int_{2k}^{2k+1}-B'(x)\,dx\;}
+\]
+This gives the interpretation used throughout: $\varpi$ measures the total amount by
+which the normalized bell \emph{descends} across the selected intervals, weighting each
+equally. It is a \emph{tail-drop-strength} quantity in this specific, finite-location
+sense: a measure of selected-interval descent, not the area under the tails, and
+(see the remark following Theorem~\ref{thm:range}) not a universal ordering of
+asymptotic tail decay. Two consequences follow, and both are used later: $\varpi$
+requires no moments to exist, and $\varpi$ depends on $B$ only through its values at
+the integers.
+
+\subsection{Range of the Bell Angle}
+
+\begin{theorem}[Range]\label{thm:range}
+For every strictly decreasing normalized bell,
+\[
+\boxed{\;0<\varpi<1\;}
+\]
+and both endpoints are approached but never attained. Every value in $(0,1)$ occurs.
+\end{theorem}
+
+\begin{proof}
+Every term of $\varpi/2=\sum_{k\ge1}[B(2k)-B(2k+1)]$ is positive because
+$B(2k)>B(2k+1)$, so $\varpi>0$. For the upper bound, these terms form a subcollection of
+a telescoping series over all consecutive integers from $2$ onward:
+\[
+\frac{\varpi}{2}<\sum_{j=2}^{\infty}\left[B(j)-B(j+1)\right]=B(2)<B(1)=\frac12,
+\]
+the first inequality strict because the omitted terms $B(3)-B(4),B(5)-B(6),\dots$ are
+each positive, and the middle evaluation using $B(j)\to0$.
+
+For sharpness at $0$, the super-Gaussians $B_m(x)=2^{-x^{2m}}$ are normalized bells with
+$\varpi\le2B_m(2)=2\cdot2^{-4^m}\to0$ as $m\to\infty$.
+
+For sharpness at $1$, fix a positive integer $k$ and set $\widetilde\lambda_k=k$,
+$\widetilde\varepsilon_k=1/k$, $\widetilde b_k=\widetilde\varepsilon_k4^{-k}$,
+$\widetilde c_k=(1-\widetilde b_k)/\tanh\widetilde\lambda_k$, and
+$\widetilde P_k(x)=\widetilde c_k\tanh(\widetilde\lambda_k x^2)+\widetilde b_kx^{2k}$,
+$\widetilde B_k(x)=2^{-\widetilde P_k(x)}$. Since $\tanh\widetilde\lambda_k>0$ and
+$\widetilde b_k<1$, $\widetilde c_k>0$; both $\tanh(\widetilde\lambda_kx^2)$ and
+$x^{2k}$ are even and strictly increasing in $|x|$, so $\widetilde B_k$ is a
+normalized, symmetric, strictly decreasing bell with $\widetilde B_k(0)=1$. Directly,
+$\widetilde P_k(1)=\widetilde c_k\tanh\widetilde\lambda_k+\widetilde b_k=(1-\widetilde
+b_k)+\widetilde b_k=1$ exactly, for every $k$, so $\widetilde B_k(1)=\tfrac12$ exactly.
+At $x=2$: $\widetilde P_k(2)=\widetilde c_k\tanh(4k)+\widetilde\varepsilon_k$; since
+$\tanh k,\tanh4k\to1$ exponentially while $\widetilde\varepsilon_k=1/k\to0$ only
+polynomially, $\widetilde c_k\tanh4k\to1^-$ and $\widetilde
+P_k(2)=1+\tfrac1k+o(\tfrac1k)\to1^+$, hence $\widetilde B_k(2)\to\tfrac12^-$. At $x=3$:
+$\widetilde P_k(3)=\widetilde c_k\tanh(9k)+\widetilde\varepsilon_k(9/4)^k\to\infty$,
+since $\widetilde\varepsilon_k(9/4)^k=(9/4)^k/k\to\infty$, hence $\widetilde
+B_k(3)\to0$. Writing $\widetilde\varpi_k=\varpi(\widetilde B_k)$, the bound $\varpi<1$
+already established gives $\widetilde\varpi_k<1$ for every $k$, while
+$\widetilde\varpi_k\ge2[\widetilde B_k(2)-\widetilde B_k(3)]\to2(\tfrac12-0)=1$; by
+squeezing, $\widetilde\varpi_k\to1$.
+
+Since $0<\varpi<1$ strictly for every such bell, by the inequalities already
+established, neither endpoint is ever attained.
+
+To see that every intermediate value is attained, not merely approached, fix
+$c\in(0,1)$ and choose $m$ with $\varpi(B_m)<c$ and $k$ with $\widetilde\varpi_k>c$,
+using the two limits above. For $\eta\in[0,1]$ set $B_\eta=\eta\widetilde
+B_k+(1-\eta)B_m$. Since $\widetilde B_k,B_m$ are even and strictly decreasing on
+$(0,\infty)$ with $\widetilde B_k(0)=B_m(0)=1$, $\widetilde B_k(1)=B_m(1)=\tfrac12$, so
+is any convex combination: $B_\eta(0)=1$, $B_\eta(1)=\tfrac12$, and $B_\eta$ is
+strictly decreasing on $(0,\infty)$ because $\eta\widetilde
+B_k(x_1)+(1-\eta)B_m(x_1)>\eta\widetilde B_k(x_2)+(1-\eta)B_m(x_2)$ whenever $0\le
+x_1<x_2$. So $B_\eta$ is a normalized bell for every $\eta$. Because the bilateral sum
+is taken in the fixed paired convention of Section~3.2 for every bell here, a finite
+linear combination of two limits taken along the same partial-sum sequence equals the
+linear combination of the limits, giving
+\[
+\varpi(B_\eta)=\eta\,\widetilde\varpi_k+(1-\eta)\,\varpi(B_m),
+\]
+an affine, hence continuous, function of $\eta$ (the same fact is recorded
+independently, for general matched-width mixtures, as
+Propositions~\ref{prop:mixnorm} and~\ref{prop:affine} in Section~6). Since
+$B_\eta|_{\eta=0}=B_m$ and $B_\eta|_{\eta=1}=\widetilde B_k$, we have
+$\varpi(B_m)<c<\widetilde\varpi_k$, so by the intermediate value theorem applied to the
+continuous, affine function $\eta\mapsto\varpi(B_\eta)$ on $[0,1]$, there exists
+$\eta^\ast\in(0,1)$ with $\varpi(B_{\eta^\ast})=c$ exactly. As $c\in(0,1)$ was
+arbitrary, every value in $(0,1)$ is attained.
+\end{proof}
+
+\begin{remark}[Weak hypotheses]\label{rem:weak}
+The proof uses only symmetry, strict decrease, decay to zero, and $B(1)=\tfrac12$. No
+smoothness and no integrability are required. This is what allows $\varpi$ to be applied
+in Section~\ref{sec:zc} to a bell whose total area is infinite.
+\end{remark}
+
+\begin{remark}[The second family is not heavy-tailed]
+The construction reaching $\varpi\to1$ has \emph{super}-Gaussian decay; it reaches the
+ceiling because its descent is postponed, not because it is slow. Consequently no
+universal monotone relationship between tail order and $\varpi$ holds, and none is
+claimed here.
+\end{remark}
+
+\subsection{Reference Values}
+
+\begin{example}[Closed forms]\label{ex:closed}
+Three normalized bells have $\varpi$ in closed form:
+\[
+2^{-x^2}:\;\;\varpi=\vartheta_4\!\left(0,\tfrac12\right)=0.12112420800258050\ldots,
+\qquad
+\frac{1}{1+x^2}:\;\;\varpi=\frac{\pi}{\sinh\pi}=0.27202905498213316\ldots,
+\]
+\[
+2^{-|x|}:\;\;\varpi=\tfrac13 .
+\]
+The first is the Jacobi theta value $\vartheta_4(0,q)=\sum_n(-1)^nq^{n^2}$ at
+$q=\tfrac12$ \cite{DLMF}; the second follows from the partial-fraction expansion of $\pi\csc(\pi z)$;
+the third is a geometric series. All three were confirmed against direct summation.
+\end{example}
+
+\begin{observation}[Spectrum of representative bells]\label{obs:spectrum}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Normalized bell & Description & $\varpi$\\
+\midrule
+$2^{-x^{6}}$ & super-Gaussian $m=3$ & $1.0842\times10^{-19}$\\
+$2^{-x^{4}}$ & super-Gaussian $m=2$ & $3.05176\times10^{-5}$\\
+$2^{-x^{2}}$ & Gaussian & $0.121124208003$\\
+$\operatorname{sech}(ax)$, $a=\operatorname{arccosh}2$ & $\operatorname{sech}$-type & $0.225052446335$\\
+$\left(1+x^{2}\right)^{-1}$ & Cauchy & $0.272029054982$\\
+$2^{-|x|}$ & Laplace-type & $1/3$\\
+$\left(1+3x^{2}\right)^{-1/2}$ & infinite area & $0.336624306909$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The infinite-area row converges slowly ($O(k^{-2})$ term-wise); naive truncation of
+$2\sum_{k\le K}[B(2k)-B(2k+1)]$ at $K=5\times10^6$ is already off by $\sim6\times10^{-8}$,
+so this entry was recomputed with convergence-accelerated summation.
+\end{observation}
+
+ 
+\section{What the Bell Angle Does Not Determine}\label{sec:notdetermine}
+ 
+
+Because $\varpi$ is a single number extracted from an infinite-dimensional class, it
+cannot identify a bell. This section makes that precise, since it determines how the
+statistic may honestly be used.
+
+\begin{proposition}[Level sets admit arbitrarily many parameters]\label{prop:levelsets}
+For every $c\in(0,1)$ and every $N\in\mathbb N$, the level set $\{B:\varpi(B)=c\}$
+contains a family of normalized bells parametrized injectively by an open subset of
+$\mathbb R^N$.
+\end{proposition}
+
+\begin{proof}
+By \eqref{eq:drops}, $\varpi$ depends on $B$ only through its values at the integers.
+Fix a normalized bell $B_0$ with $\varpi(B_0)=c$ and fix $N$. Choose
+$2=a_0<a_1<\cdots<a_N<a_{N+1}=3$; since $B_0$ is strictly decreasing,
+$B_0(a_0)>\cdots>B_0(a_{N+1})$, so
+$\delta:=\tfrac13\min_{0\le j\le N}[B_0(a_j)-B_0(a_{j+1})]>0$. For
+$\vec v=(v_1,\ldots,v_N)$ with each $v_j\in(B_0(a_j)-\delta,B_0(a_j)+\delta)$, a direct
+check gives $B_0(a_0)>v_1>\cdots>v_N>B_0(a_{N+1})$ with margin at least $\delta$ at
+each step. Define $B_{\vec v}$ on $[2,3]$ as the piecewise-linear interpolant through
+$(a_0,B_0(a_0)),(a_1,v_1),\ldots,(a_N,v_N),(a_{N+1},B_0(a_{N+1}))$, equal to $B_0$
+outside $(2,3)$ and mirrored evenly. This is continuous, strictly decreasing on
+$(0,\infty)$, symmetric, and unchanged at every integer, since the deformation is
+supported in the open interval $(2,3)$ and its endpoint values are fixed; hence it is a
+normalized bell with $\varpi(B_{\vec v})=\varpi(B_0)=c$ for every $\vec v$. Since
+$B_{\vec v}(a_j)=v_j$, the map $\vec v\mapsto B_{\vec v}$ is injective, giving the
+claimed $N$-parameter family. As $N$ was arbitrary, the level set contains such
+families for every $N$.
+\end{proof}
+
+\begin{observation}[A collision between two natural shapes]\label{obs:collide}
+Non-uniqueness is not confined to engineered deformations. The normalized
+$\operatorname{sech}$ bell and the rational bell
+$\left[1+(2^{1/q}-1)x^2\right]^{-q}$ at $q^\star=1.80237118914$ agree to roughly 13
+significant figures ($\varpi(\mathrm{sech\text{-}type})=0.2250524463350815\ldots$
+against $\varpi(B_{q^\star})=0.2250524463351170\ldots$, a residual of order $10^{-14}$
+under convergence-accelerated summation), although one tail is exponential and the
+other is a power law, differing by more than two orders of magnitude at $x=10$.
+\end{observation}
+
+\begin{remark}[Consequences for use]\label{rem:scope}
+Two conclusions follow, and they are used in Section~\ref{sec:applications}.
+\emph{Identification} of a bell by $\varpi$ requires restricting to a family on which
+$\varpi$ is injective. \emph{Rejection}, by contrast, requires no injectivity at all: if
+the range of $\varpi$ over a family excludes an observed value, that family cannot fit
+the data. One-sided inference remains valid in general.
+\end{remark}
+
+ 
+\section{A Distinguished Value: the Bell Critical Constant}\label{sec:zc}
+ 
+
+By Remark~\ref{rem:weak}, $\varpi$ is defined for bells whose total area is infinite.
+This gives rise to a distinguished value worth recording.
+
+Consider the normalized rational family
+\[
+B_q(x)=\left[1+\left(2^{1/q}-1\right)x^2\right]^{-q},\qquad q>0,
+\]
+every member of which satisfies $B_q(0)=1$ and $B_q(1)=\tfrac12$ automatically. Since
+$B_q(x)\sim C_q|x|^{-2q}$, the total area is finite exactly when $q>\tfrac12$. At the
+boundary the family reaches
+\[
+B_*(x)=\frac{1}{\sqrt{1+3x^2}},
+\]
+which still tends to zero but behaves like $(\sqrt3\,|x|)^{-1}$, so its area diverges.
+
+\begin{definition}[Bell Critical Constant]\label{def:zc}
+\[
+\boxed{\;Z_c=\varpi(B_*)=\sum_{n=-\infty}^{\infty}\frac{(-1)^n}{\sqrt{1+3n^2}}
+\approx 0.336624306909156\;}
+\]
+The subscript $c$ refers to the \emph{critical} behavior of this family.
+\end{definition}
+
+The interest of $Z_c$ is that it is a finite shape value attached to a bell for which the
+ordinary area statistic has already failed. $Z_c$ is $\varpi$ evaluated at the family's
+integrability boundary itself, $B_*=B_{1/2}$; whether $\varpi(B_q)\to Z_c$ continuously
+as $q\to\tfrac12^+$ is Open Problem~\ref{op:interchange} and is not assumed here.
+
+\begin{remark}[What $Z_c$ is not]\label{rem:zcnot}
+Three clarifications, since each is a natural guess and each is wrong.
+\begin{enumerate}
+  \item $Z_c$ is not an upper bound for $\varpi$. By Theorem~\ref{thm:range} there
+        are normalized bells (integrable ones) with $\varpi$ arbitrarily close to
+        $1$, far above $Z_c$.
+  \item $Z_c$ is not a gap or discontinuity in the spectrum. By
+        Theorem~\ref{thm:range} the set of attainable values is the whole interval
+        $(0,1)$, with no gaps anywhere, and $Z_c$ is an ordinary interior point of it.
+  \item $Z_c$ is not a universal integrability threshold. Bells with
+        $\varpi>Z_c$ may have finite area, and a bell that merely happens to satisfy
+        $\varpi=Z_c$ is not thereby critical: criticality is a position within a family,
+        not a numerical value.
+\end{enumerate}
+Other families have their own critical values, and $Z_c$ is the one belonging to this
+family. Nothing further is claimed about them here.
+\end{remark}
+
+ 
+\section{Applications}\label{sec:applications}
+ 
+
+\subsection{A shape statistic that survives where moments do not}
+
+Standard shape indices are moment ratios. Kurtosis requires a finite fourth moment, and
+even the variance requires a finite second. For heavy-tailed data these do not merely estimate poorly; they do not exist, and the usual toolkit is
+unavailable precisely where shape discrimination is most needed.
+
+Because $\varpi$ is a sum of bounded differences of a bounded function, it is finite for
+every bell-shaped function. For the normalized Student's $t$ family with $\nu=2q-1$:
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+$\nu$ & $\varpi$ & variance & kurtosis\\
+\midrule
+$0.5$ & $0.298112$ & infinite & undefined\\
+$1$   & $0.272029$ & infinite & undefined\\
+$2$   & $0.238608$ & infinite & undefined\\
+$4$   & $0.203560$ & finite   & undefined\\
+$6$   & $0.185021$ & finite   & finite\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Mixtures: exact recovery of a shape parameter}
+
+Proposition~\ref{prop:levelsets} rules out identification in general. Mixture families
+are an exception in which identification is not merely possible but exact, and requires
+no conjecture.
+
+\begin{proposition}[Matched-width mixtures are automatically normalized]\label{prop:mixnorm}
+Let $B_1,B_2$ be normalized bells and $\eta\in[0,1]$. Then
+$B_\eta=\eta B_1+(1-\eta)B_2$ is a normalized bell: it is symmetric, strictly decreasing
+on $(0,\infty)$, tends to zero, and satisfies $B_\eta(0)=1$ and $B_\eta(1)=\tfrac12$. In
+particular its own HWHM equals $1$, so no renormalization is required.
+\end{proposition}
+
+\begin{proof}
+Each property is preserved under convex combination, and
+$B_\eta(0)=\eta+(1-\eta)=1$, $B_\eta(1)=\eta\cdot\tfrac12+(1-\eta)\cdot\tfrac12=\tfrac12$.
+Strict decrease makes the solution of $B_\eta(x)=\tfrac12$ on $(0,\infty)$ unique, hence
+equal to $1$.
+\end{proof}
+
+\begin{proposition}[$\varpi$ is affine on mixtures]\label{prop:affine}
+$\varpi(B_\eta)=\eta\,\varpi(B_1)+(1-\eta)\,\varpi(B_2)$.
+\end{proposition}
+
+\begin{proof}
+By Proposition~\ref{prop:mixnorm} the mixture is already normalized, so
+Definition~\ref{def:varpi} applies to it with no change of scale. Each component series
+converges by the Leibniz criterion, and a finite linear combination of convergent series
+converges to the corresponding combination of limits.
+\end{proof}
+
+\begin{corollary}[Exact inversion]\label{cor:inv}
+If $\varpi(B_1)\neq\varpi(B_2)$ then $\eta\mapsto\varpi(B_\eta)$ is affine and strictly
+monotone, hence injective on $[0,1]$, with
+\[
+\boxed{\;\eta=\frac{\varpi-\varpi(B_2)}{\varpi(B_1)-\varpi(B_2)}\;}
+\]
+Injectivity here is a consequence of affineness, not an assumption.
+\end{corollary}
+
+\subsection{Pseudo-Voigt line shapes}
+
+Spectroscopy and powder diffraction routinely model peak shapes by the
+\emph{pseudo-Voigt} profile: a convex combination of a Gaussian and a Lorentzian sharing
+a common half-width, with $\eta\in[0,1]$ interpolating between instrumental (Gaussian)
+and lifetime or strain (Lorentzian) broadening. In normalized coordinates this is
+\begin{equation}\label{eq:pv}
+B_\eta(x)=\frac{\eta}{1+x^2}+(1-\eta)\,2^{-x^2},
+\end{equation}
+and by Proposition~\ref{prop:mixnorm} it needs no renormalization at any $\eta$. HWHM is
+already the standard width convention in these fields, so the normalization of this paper
+is the one practitioners use.
+
+\begin{theorem}[Mixing recovery]\label{thm:pv}
+For the profile \eqref{eq:pv},
+\[
+\varpi(B_\eta)=\vartheta_4\!\left(0,\tfrac12\right)+\eta\,\Delta,
+\qquad
+\Delta=\frac{\pi}{\sinh\pi}-\vartheta_4\!\left(0,\tfrac12\right)
+=0.15090484697955266\ldots,
+\]
+and therefore
+\[
+\boxed{\;\eta=\frac{\varpi-\vartheta_4\!\left(0,\tfrac12\right)}
+{\dfrac{\pi}{\sinh\pi}-\vartheta_4\!\left(0,\tfrac12\right)}\;}
+\]
+\end{theorem}
+
+\begin{proof}
+Immediate from Example~\ref{ex:closed}, Proposition~\ref{prop:affine} and
+Corollary~\ref{cor:inv}.
+\end{proof}
+
+\begin{observation}[Verification]\label{obs:pv}
+Direct summation against the affine prediction:
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+$\eta$ & $\varpi$ computed & affine prediction\\
+\midrule
+$0$    & $0.12112420800258$ & $0.12112420800258$\\
+$0.25$ & $0.15885041974747$ & $0.15885041974747$\\
+$0.5$  & $0.19657663149236$ & $0.19657663149236$\\
+$0.75$ & $0.23430284323724$ & $0.23430284323724$\\
+$1$    & $0.27202905498213$ & $0.27202905498213$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Agreement to $14$ digits at every $\eta$; the mixture HWHM was separately confirmed to
+equal $1.0$ at $\eta=0.3$ and $\eta=0.7$.
+\end{observation}
+
+\begin{remark}[Pseudo-Voigt versus true Voigt]\label{rem:voigt}
+The true Voigt profile is a \emph{convolution} of Gaussian and Lorentzian, not a convex
+combination, and Proposition~\ref{prop:affine} does not apply to it. The result above
+concerns the pseudo-Voigt approximation as defined in \eqref{eq:pv} -- a convex
+combination of \emph{peak}-normalized Gaussian and Lorentzian components at matched
+half-width. Theorem~\ref{thm:pv} is exact for this peak-normalized, matched-HWHM
+parameterization; other treatments in the pseudo-Voigt literature, including the
+widely used Thompson--Cox--Hastings line \cite{TCH1987} and its extensions
+\cite{IdaAndoToraya2000}, may use different component normalizations or width
+conventions, and the mixing coefficient recovered here is not claimed to coincide with
+a conventionally defined mixing coefficient without independently verifying and, if
+needed, converting between the two. Pseudo-Voigt profiles are widely used in powder
+diffraction and related line-profile applications \cite{TCH1987}.
+\end{remark}
+
+\subsection{Estimation from data}
+
+The empirical procedure is: form a density estimate $\hat f$; locate its mode (or, if
+the symmetry center is known independently, use that) and treat it as the origin,
+giving $\hat f(0)$; solve $\hat f(\hat X)=\tfrac12\hat f(0)$ for the half-width; evaluate
+$\hat\varpi=\sum_n(-1)^n\hat f(\hat Xn)/\hat f(0)$; and invert by
+Theorem~\ref{thm:pv}. The third step requires $\hat f$ only at the points $\hat Xn$, and
+the terms decay quickly, so roughly a dozen density evaluations sufficed for the profiles
+studied in Observation~\ref{obs:sim} below; no general truncation bound is established.
+Both inputs, peak height and half-width, are properties of the bulk of the data rather
+than of its extremes, which motivates studying robustness relative to moment estimators;
+no such advantage is established here.
+
+\begin{observation}[Exploratory simulation]\label{obs:sim}
+Samples of size $n=40{,}000$ were drawn from the density proportional to \eqref{eq:pv},
+with $40$ replications per $\eta$. A Gaussian kernel estimate was used, with bandwidth
+computed from the central $80\%$ of $|x|$, since Silverman's rule is unusable in the
+heavy-tailed regime.
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+true $\eta$ & mean $\hat\eta$ & standard deviation\\
+\midrule
+$0.00$ & $-0.011$ & $0.111$\\
+$0.25$ & $0.200$  & $0.119$\\
+$0.50$ & $0.451$  & $0.119$\\
+$0.75$ & $0.739$  & $0.124$\\
+$1.00$ & $0.943$  & $0.132$\\
+\bottomrule
+\end{tabular}
+\end{center}
+This is an exploratory illustration rather than a checked, reproducible study: the
+random-sampling procedure, exact bandwidth formula, HWHM root-solving method, and
+treatment of any $\hat\eta$ estimates outside $[0,1]$ were not preserved in enough
+detail for independent reproduction, and the reported bias and standard deviations
+should be read accordingly.
+\end{observation}
+\subsection{Approximate shape screening from empirical curves}
+\label{sec:empiricalscreening}
+
+The preceding framework is defined for symmetric normalized bells, whereas a curve
+estimated from finite data will generally fail to satisfy these conditions exactly.
+Sampling variation, measurement noise, and the density-estimation procedure itself may
+introduce small asymmetries even when the underlying distribution is symmetric. The
+Bell Angle and Bell Vector may nevertheless be used as approximate shape descriptors
+after centering and symmetrizing the estimated curve.
+
+Let $\widehat f$ denote a nonnegative estimated curve obtained from observed data, and
+let $\widehat a$ denote its estimated mode or another chosen estimate of its symmetry
+center. Define the symmetrized profile
+\[
+\widehat f_s(u)
+=
+\frac{
+\widehat f(\widehat a+u)
++
+\widehat f(\widehat a-u)
+}{2},
+\qquad
+u\ge0.
+\]
+Extend $\widehat f_s$ evenly to negative $u$. This operation does not assert that the
+observed curve is truly symmetric; it extracts the symmetric component about the chosen
+center for comparison with the symmetric bell families considered in this paper.
+
+Suppose $\widehat f_s$ is sufficiently bell-like that a positive empirical half-width
+$\widehat X$ can be located from
+\[
+\widehat f_s(\widehat X)
+=
+\frac12\widehat f_s(0).
+\]
+The corresponding pseudo-normalized empirical bell is
+\[
+\boxed{
+\widehat B(x)
+=
+\frac{\widehat f_s(\widehat Xx)}
+{\widehat f_s(0)}.
+}
+\]
+By construction,
+\[
+\widehat B(0)=1,
+\qquad
+\widehat B(1)=\frac12,
+\qquad
+\widehat B(-x)=\widehat B(x).
+\]
+Because $\widehat B$ is estimated from finite data, it need not be perfectly smooth or
+strictly decreasing, and the exact theoretical results for normalized bells should not
+automatically be interpreted as sampling guarantees for $\widehat B$. Instead,
+$\widehat B$ provides an approximate normalized shape to which the descriptors of this
+paper may be applied.
+
+A
+\subsection{Limitations}
+
+\begin{enumerate}
+  \item \textbf{No identification in general.} By Proposition~\ref{prop:levelsets},
+        $\varpi$ is a scalar shape statistic useful for one-sided screening, not
+        a distribution identifier. Claims of identification must name the family they are
+        restricted to.
+  \item \textbf{A regime where $\varpi$ is uninformative.} For super-Gaussian profiles
+        $2^{-x^{2m}}$ the Bell Angle collapses as $\varpi\le2\cdot2^{-4^m}$: about
+        $3\times10^{-5}$ at $m=2$ and $10^{-19}$ at $m=3$. It therefore has no resolving
+        power for flat-top order and should not be proposed for beam profiling.
+  \item \textbf{No sampling theory.} Consistency, asymptotic variance, bandwidth
+        selection, and comparisons against maximum-likelihood or moment-based estimators
+        are not established here.
+\end{enumerate}
+
+ 
+\section{The Bell Vector and Universal Reconstruction}\label{sec:bellvector}
+ 
+
+The construction below is an instance of the classical Faber--Schauder system: the
+dyadic hat-function expansion of a continuous function on $[0,1]$, with coefficients
+given by the deviation of the true value at each dyadic midpoint from the previous
+level's linear interpolant, is due to Faber \cite{Faber1910} and Schauder
+\cite{Schauder1927} (see \cite{Semadeni1982} for a modern treatment), and is the
+standard first example of an explicit Schauder basis for $C[0,1]$. What is specific
+here is the compactifying change of variable $t=|x|/(1+|x|)$ below, which transports
+this classical reconstruction from $[0,1]$ to the class of normalized bells on
+$\mathbb{R}$, together with the observation, given below, that the HWHM normalization
+forces the coarsest coefficient $w_{0,0}$ to vanish identically. The Bell
+Reconstruction Theorem is accordingly a bell-specialized restatement of the classical
+Faber--Schauder convergence theorem, not an independently new convergence result; the
+specialization and the vanishing-coefficient fact are what is specific to the
+construction developed here.
+
+The Bell Angle $\varpi$ is a scalar descriptor of a normalized bell, but a single scalar cannot uniquely determine an arbitrary bell. A complete representation may instead be obtained through a countably infinite coefficient vector.
+Let
+\[
+B:\mathbb{R}\to\mathbb{R}
+\]
+be a continuous, even, normalized bell satisfying
+\[
+B(0)=1,
+\qquad
+B(1)=\frac12,
+\qquad
+\lim_{|x|\to\infty}B(x)=0.
+\]
+Introduce the compactifying transformation
+\[
+t=t(x)=\frac{|x|}{1+|x|},
+\]
+which maps $x\in\mathbb{R}$ into $t\in[0,1)$. Its inverse on $x\ge 0$ is
+\[
+x=\frac{t}{1-t}.
+\]
+Define
+\[
+F(t)=B\!\left(\frac{t}{1-t}\right),
+\qquad 0\le t<1,
+\]
+and extend continuously to $t=1$ by
+\[
+F(1)=0.
+\]
+Therefore
+\[
+F(0)=1,
+\qquad
+F\!\left(\frac12\right)=\frac12,
+\qquad
+F(1)=0.
+\]
+Define the triangular function
+\[
+\phi(u)=\max\{1-|u|,0\}.
+\]
+For
+\[
+n\ge 0,
+\qquad
+0\le k<2^n,
+\]
+define the universal reconstruction functions
+\[
+\pi_{n,k}(x)
+=
+\phi\!\left(
+2^{n+1}\frac{|x|}{1+|x|}
+-(2k+1)
+\right),
+\]
+together with
+\[
+\pi_0(x)=\frac{1}{1+|x|}.
+\]
+These functions are independent of the particular bell $B$.
+For each dyadic interval define
+\[
+t_L=\frac{k}{2^n},
+\qquad
+t_M=\frac{2k+1}{2^{n+1}},
+\qquad
+t_R=\frac{k+1}{2^n}.
+\]
+The corresponding Bell coefficients are
+\[
+w_{n,k}
+=
+F(t_M)
+-
+\frac{F(t_L)+F(t_R)}{2}.
+\]
+\begin{definition}[Bell Vector]\label{def:bellvector}
+The Bell Vector of $B$ is the countably infinite vector
+\[
+\boxed{
+\vec{w}(B)
+=
+\left(
+1,\,
+w_{0,0},\,
+w_{1,0},w_{1,1},\,
+w_{2,0},w_{2,1},w_{2,2},w_{2,3},
+\ldots
+\right).
+}
+\]
+\end{definition}
+Define the universal reconstruction vector
+\[
+\boxed{
+\vec{\pi}(x)
+=
+\left(
+\pi_0(x),\,
+\pi_{0,0}(x),\,
+\pi_{1,0}(x),\pi_{1,1}(x),\,
+\pi_{2,0}(x),\ldots
+\right).
+}
+\]
+The HWHM normalization implies
+\[
+w_{0,0}
+=
+F\!\left(\frac12\right)
+-
+\frac{F(0)+F(1)}{2}
+=
+\frac12-\frac12
+=
+0.
+\]
+\begin{theorem}[Bell Reconstruction Theorem]\label{thm:bellreconstruction}
+For every continuous normalized bell satisfying the assumptions above,
+\[
+\boxed{
+B(x)=\vec{\pi}(x)\cdot\vec{w}(B).
+}
+\]
+Equivalently,
+\[
+\boxed{
+B(x)
+=
+\pi_0(x)
++
+\sum_{n=0}^{\infty}
+\sum_{k=0}^{2^n-1}
+w_{n,k}\pi_{n,k}(x).
+}
+\]
+\end{theorem}
+\begin{proof}
+For each integer $N\ge 0$, let $F_N$ denote the piecewise-linear interpolation of $F$ on the dyadic grid
+\[
+\left\{
+\frac{k}{2^N}:0\le k\le 2^N
+\right\}.
+\]
+At the coarsest level,
+\[
+F_0(t)
+=
+(1-t)F(0)+tF(1).
+\]
+Since
+\[
+F(0)=1,
+\qquad
+F(1)=0,
+\]
+we obtain
+\[
+F_0(t)=1-t.
+\]
+Passing from dyadic level $n$ to $n+1$ introduces the midpoint
+\[
+t_M=\frac{2k+1}{2^{n+1}}
+\]
+of each interval
+\[
+[t_L,t_R]
+=
+\left[
+\frac{k}{2^n},
+\frac{k+1}{2^n}
+\right].
+\]
+The previous linear interpolant predicts the midpoint value
+\[
+\frac{F(t_L)+F(t_R)}{2}.
+\]
+Hence the required midpoint correction is
+\[
+w_{n,k}
+=
+F(t_M)
+-
+\frac{F(t_L)+F(t_R)}{2}.
+\]
+Since
+\[
+\phi\!\left(2^{n+1}t-(2k+1)\right)
+\]
+equals $1$ at $t=t_M$, vanishes at $t=t_L$ and $t=t_R$, and is linear between these points, the successive interpolants satisfy
+\[
+F_{n+1}(t)
+=
+F_n(t)
++
+\sum_{k=0}^{2^n-1}
+w_{n,k}
+\phi\!\left(
+2^{n+1}t-(2k+1)
+\right).
+\]
+Iterating yields
+\[
+F_N(t)
+=
+1-t
++
+\sum_{n=0}^{N-1}
+\sum_{k=0}^{2^n-1}
+w_{n,k}
+\phi\!\left(
+2^{n+1}t-(2k+1)
+\right).
+\]
+Because $F$ is continuous on the compact interval $[0,1]$, it is uniformly continuous. The mesh size of the dyadic interpolation tends to zero as $N\to\infty$, so
+\[
+F_N\to F
+\]
+uniformly on $[0,1]$.
+Therefore
+\[
+F(t)
+=
+1-t
++
+\sum_{n=0}^{\infty}
+\sum_{k=0}^{2^n-1}
+w_{n,k}
+\phi\!\left(
+2^{n+1}t-(2k+1)
+\right).
+\]
+Finally substitute
+\[
+t=\frac{|x|}{1+|x|}.
+\]
+Since
+\[
+1-t=\frac{1}{1+|x|},
+\]
+we obtain
+\[
+B(x)
+=
+\pi_0(x)
++
+\sum_{n=0}^{\infty}
+\sum_{k=0}^{2^n-1}
+w_{n,k}\pi_{n,k}(x).
+\]
+Hence
+\[
+\boxed{
+B(x)=\vec{\pi}(x)\cdot\vec{w}(B).
+}
+\]
+\end{proof}
+\begin{theorem}[Bell Vector Uniqueness]\label{thm:bellvectoruniqueness}
+The Bell Vector uniquely determines the bell. That is,
+\[
+\boxed{
+\vec{w}(B_1)=\vec{w}(B_2)
+\iff
+B_1=B_2.
+}
+\]
+\end{theorem}
+\begin{proof}
+If
+\[
+\vec{w}(B_1)=\vec{w}(B_2),
+\]
+then their reconstruction coefficients are identical. Since the reconstruction vector $\vec{\pi}(x)$ is universal,
+\[
+\vec{\pi}(x)\cdot\vec{w}(B_1)
+=
+\vec{\pi}(x)\cdot\vec{w}(B_2)
+\]
+for every $x$. By the Bell Reconstruction Theorem,
+\[
+B_1(x)=B_2(x)
+\]
+for every $x\in\mathbb{R}$.
+The reverse implication is immediate from the definition of the coefficients.
+\end{proof}
+Uniqueness here is relative to the fixed hierarchical basis $\vec\pi(x)$ constructed
+above; it is not a claim of uniqueness among all conceivable representations of $B$.
+
+Thus the normalized bell admits the exact correspondence
+\[
+\boxed{
+B(x)
+\longleftrightarrow
+\vec{w}(B),
+}
+\]
+with universal reconstruction formula
+\[
+\boxed{
+B(\vec{w},x)
+=
+\vec{\pi}(x)\cdot\vec{w},
+}
+\]
+understood as the convergent series pairing of Theorem~\ref{thm:bellreconstruction},
+not an $\ell^2$ inner product; square-summability of $\vec w$ is not established.
+The vector $\vec{w}$ therefore contains all bell-specific information, while
+$\vec{\pi}(x)$ is universal and independent of the particular bell.
+
+ 
+\section{Open Questions}
+ 
+
+\begin{openproblem}[Injectivity on the rational family]\label{op:mono}
+Is $q\mapsto\varpi(B_q)$ strictly monotone on $(0,\infty)$? Numerical evidence supports
+it. The obvious termwise route fails: writing $D_k(q)=B_q(2k)-B_q(2k+1)$, the terms with
+$k\ge2$ decrease in $q$ but $D_1$ does not, rising from about $0.0889$ at $q=0.51$ to a
+maximum near $q\approx1.2$ before falling. A proof must handle cancellation between $D_1$
+and the remaining terms.
+\end{openproblem}
+
+\begin{openproblem}[Limit interchange at the critical bell]\label{op:interchange}
+Establish $\lim_{q\to1/2^+}\varpi(B_q)=\varpi(B_*)$ rigorously, justifying the
+interchange of the limit with the infinite alternating sum.
+\end{openproblem}
+
+\begin{openproblem}[Recovering the bell from the transform]\label{op:coeff}
+Does the full sequence $\widehat B\!\left(k+\tfrac12\right)$, $k\ge0$ (equivalently the
+whole curve $Y\{B\}(x)$ rather than its value at the origin) determine $B$ within the
+class? This is the natural question left open by Proposition~\ref{prop:levelsets}.
+\end{openproblem}
+
+\begin{openproblem}[Flat-top normalization]\label{op:flat}
+A generalized series-reversion representation of the half-width $X$ when $f''(0)=0$.
+\end{openproblem}
+
+\begin{openproblem}[Sampling theory]\label{op:sampling}
+Consistency, asymptotic variance, and bandwidth selection for $\hat\varpi$, and
+robustness comparisons against moment-based shape estimators.
+\end{openproblem}
+
+\begin{openproblem}[True Voigt]\label{op:voigt}
+The behavior of $\varpi$ on the convolution family, where affineness fails.
+\end{openproblem}
+
+ 
+\section{Relationship to Known Mathematics}
+ 
+
+The machinery used here is classical and is not claimed as new. Periodization with
+modulation (for $F\in L^1$, the periodization of $e^{2\pi ivt}F(t)$ has Fourier
+coefficients $\widehat F(n+v)$) gives the Bell Angle Fourier Representation at
+$v=\tfrac12$. The alternating shift sum is the Zak transform at $\omega=\tfrac12$, whose
+quasi-periodicity specializes to the antiperiodicity $Y(x+1)=-Y(x)$. Poisson summation
+underlies both. Lagrange inversion is classical, as is the partial-fraction evaluation
+giving $\pi/\sinh\pi$, and $\vartheta_4$ is a standard Jacobi theta function. Half-width
+at half-maximum is a long-established width convention, and the rational family above is
+the normalized Student's $t$ / Pearson type VII family under reparameterization
+\cite{JohnsonKotzBalakrishnan1995}.
+
+What is proposed as potentially distinctive (as a combination, and not asserted as
+novel pending a systematic literature search) is: the universal normalization by peak
+height together with half-height width; its pairing with alternating periodization; the
+scalar $\varpi$; the selected-interval identity \eqref{eq:drops} that the $B(1)=\tfrac12$
+cancellation makes possible; the range theorem with sharp endpoints; the reading of
+$\varpi$ as a bell ranking with infinite-dimensional level sets; the constant $Z_c$; and
+the exact mixture recovery of Theorem~\ref{thm:pv}.
+
+ 
+\section{Conclusion}
+ 
+
+This paper developed two complementary descriptions of a normalized bell-shaped
+function. The peak-height/HWHM normalization removes location, height, and width as
+free parameters, after which the scalar $\varpi$ compresses the resulting profile into
+a single selected-interval descent statistic (called tail-drop strength in this
+paper) lying in $(0,1)$, computed from the identity
+$\varpi=2\sum_{k\ge1}[B(2k)-B(2k+1)]$ and requiring neither differentiability nor
+finite area in general.
+
+This compression is necessarily lossy: because $\varpi$ depends on $B$ only through its
+integer values, the level set $\{B:\varpi(B)=c\}$ contains, for every $c$ and every
+$N$, families of normalized bells parametrized by arbitrarily many independent
+deformation parameters. $\varpi$ should accordingly be read as a scalar shape statistic
+for one-sided screening, not a distribution identifier, and, as the collapse of
+$\varpi$ for super-Gaussian profiles and the sech/rational-family near-collision both
+show, not a universal measure of asymptotic tail order.
+
+Where identification is restricted to a specific family, the picture is different: on
+matched-half-width mixtures $\varpi$ is exactly affine, giving closed-form,
+family-specific recovery of a mixing parameter, illustrated here for a peak-normalized
+pseudo-Voigt-type profile. The Bell Vector then supplies what $\varpi$ alone cannot:
+applying the classical Faber--Schauder dyadic reconstruction to the normalized bell
+after a compactifying change of variable gives a countable coefficient vector that
+recovers $B$ exactly and uniquely, relative to this fixed hierarchical basis.
+
+Several questions raised in the course of this development remain open: whether
+$\varpi$ is monotone along the rational family $B_q$; whether
+$\lim_{q\to1/2^+}\varpi(B_q)$ equals $\varpi(B_*)$; whether the full transform
+$Y\{B\}(x)$, rather than its value at the origin, determines $B$; the flat-top case
+where the standard half-width construction fails; sampling theory for the empirical
+estimator $\hat\varpi$; and the behavior of $\varpi$ on the true (convolution) Voigt
+family, where the affine mixture property does not hold. None of these is resolved
+here.
+
+\begin{thebibliography}{99}
+\bibitem{Grochenig2001} K. Gr\"ochenig, \emph{Foundations of Time-Frequency Analysis},
+  Applied and Numerical Harmonic Analysis, Birkh\"auser Boston, 2001.
+\bibitem{Faber1910} G. Faber, Ueber die Orthogonalfunktionen des Herrn Haar,
+  \emph{Jahresbericht der Deutschen Mathematiker-Vereinigung} \textbf{19} (1910), 104--112.
+\bibitem{Schauder1927} J. Schauder, Zur Theorie stetiger Abbildungen in Funktionalr\"aumen,
+  \emph{Mathematische Zeitschrift} \textbf{26} (1927), \url{https://doi.org/10.1007/BF01475440}.
+\bibitem{Semadeni1982} Z. Semadeni, \emph{Schauder Bases in Banach Spaces of Continuous
+  Functions}, Lecture Notes in Mathematics 918, Springer, 1982.
+\bibitem{TCH1987} P. Thompson, D. E. Cox, and J. B. Hastings, Rietveld refinement of
+  Debye--Scherrer synchrotron X-ray data from Al$_2$O$_3$,
+  \emph{Journal of Applied Crystallography} \textbf{20} (1987), 79--83.
+\bibitem{IdaAndoToraya2000} T. Ida, M. Ando, and H. Toraya, Extended pseudo-Voigt
+  function for approximating the Voigt profile,
+  \emph{Journal of Applied Crystallography} \textbf{33} (2000), 1311--1316.
+\bibitem{DLMF} NIST Digital Library of Mathematical Functions, Chapter 20 (Theta
+  Functions), \url{https://dlmf.nist.gov/20}.
+\bibitem{JohnsonKotzBalakrishnan1995} N. L. Johnson, S. Kotz, and N. Balakrishnan,
+  \emph{Continuous Univariate Distributions, Volume 2}, 2nd ed., Wiley, 1995.
+\end{thebibliography}
+
+\end{document}
